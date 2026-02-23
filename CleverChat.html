@@ -334,8 +334,10 @@
     // ================== НАСТРОЙКИ ==================
     var GITHUB_TOKEN = '';   // замените на свой
     var GIST_ID = '';      // замените на свой
-    var FILE_NAME = 'chat.txt';
-    var MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 МБ после шифрования
+    const FILE_NAME = 'chat.txt';
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 МБ после шифрования
+
+    var set = false;
 
     let currentUser = '';
     let currentSeed = '';
@@ -348,8 +350,16 @@
 
     // Настройки
     function set_gist_a_token(token, gist) {
-        GITHUB_TOKEN = token
-        GIST_ID = gist
+        if (set == false) {
+            GITHUB_TOKEN = token
+            GIST_ID = gist
+        }
+    }
+
+    function debug() {
+        console.log(GITHUB_TOKEN)
+        console.log(GIST_ID)
+        console.log(set)
     }
 
     async function toggleRecording() {
@@ -815,6 +825,8 @@
         refreshInterval = setInterval(loadMessages, 10000);
         
         loadMessages();
+
+        set = true;
     }
 
     document.getElementById('msgInput').addEventListener('keypress', function (e) {
