@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CleverChat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link src="anon-chat-st0.vercel.app/cloud_style.css">
+</head>
+<body>
+
+<div id="login-screen">
+    <h2 style="margin-bottom: 30px;">CleverChat</h2>
+    <input type="text" id="userName" placeholder="Username: ">
+    <input type="password" id="seedPhrase" placeholder="Chat key: ">
+    <button onclick="enterChat()">Enter the chat </button>
+</div>
+
+<div id="chat-screen">
+    <div class="header">
+        <div class="user-info">
+            <span>👤</span>
+            <span id="display-name"></span>
+        </div>
+        <div class="action-buttons">
+            <button class="icon-btn" onclick="loadMessages()" title="Update">🔄</button>
+            <button class="icon-btn" onclick="exportChat()" title="Export chat">⬇️</button>
+            <button class="icon-btn" onclick="resetChat()" title="Clear chat">🗑️</button>
+        </div>
+    </div>
+    
+    <div id="messages"></div>
+
+    <div class="input-area">
+        <input type="file" id="fileInput" style="display:none;" accept="image/*,video/*,audio/*">
+        <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Add file (max 10 Mb)">📎</button>
+        <button class="voice-btn" id="voiceBtn" onclick="toggleRecording()" title="Voice message">🎤</button>
+        <input type="text" id="msgInput" placeholder="Message..." autocomplete="off">
+        <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
+    </div>
+    <div id="compressStatus" style="display:none; background: #2b3138; color:#ffaa00; padding:4px 10px; font-size:12px; text-align:center;">⏳ Processing media...</div>
+</div>
+
+<script src="https://anon-chat-st0.vercel.app/cloud_script.js"></script>
+
+</body>
+</html>
