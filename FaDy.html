@@ -353,15 +353,15 @@
     // Настройки
     function set_gist_a_token(token, gist) { // set_gist_a_token() Можно не использовать там есть ввод
         if (set == false) {
-            GITHUB_TOKEN = token
-            GIST_ID = gist
+            GITHUB_TOKEN = token;
+            GIST_ID = gist;
         }
     }
 
     function debug() {
-        console.log(GITHUB_TOKEN)
-        console.log(GIST_ID)
-        console.log(set)
+        console.log(GITHUB_TOKEN);
+        console.log(GIST_ID);
+        console.log(set);
     }
 
     async function toggleRecording() {
@@ -592,7 +592,7 @@
             const separator = oldContent && !oldContent.endsWith('\n') ? '\n' : '';
           
             if oldContent.length() > 1000 {
-                oldContent == "0"
+                oldContent == "0";
             }
           
             const newContent = oldContent + separator + encryptedText;
@@ -825,7 +825,7 @@
         curentToken = document.getElementById('token').value;
         curentGist = document.getElementById('gist').value;
 
-        set_gist_a_token(curentToken, curentGist)
+        set_gist_a_token(curentToken, curentGist);
 
         if (!currentUser || !currentSeed) return alert("Enter username and chat key!");
 
