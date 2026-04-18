@@ -353,8 +353,8 @@
     // Настройки
     function set_gist_a_token(token, gist) { // set_gist_a_token() Можно не использовать там есть ввод
         if (set == false) {
-            GITHUB_TOKEN = token;
-            GIST_ID = gist;
+            GITHUB_TOKEN = stoken;
+            GIST_ID = sgist;
         }
     }
 
@@ -827,7 +827,7 @@
 
         set_gist_a_token(curentToken, curentGist);
 
-        if (!currentUser || !currentSeed) return alert("Enter username and chat key!");
+        if (!currentUser || !currentSeed || !curentToken || !curentGist) return alert("Enter username and chat key!");
 
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('chat-screen').style.display = 'flex';
