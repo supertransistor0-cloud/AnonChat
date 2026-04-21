@@ -3,6 +3,159 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>nekofady (AnonChat v1.4.6)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<style>
+/* Ваши стили без изменений, только вставлены сюда */
+* { box-sizing: border-box; }
+:root {
+  --bg-color: #0b0e11;
+  --container-bg: #222222;
+  --accent-color: #ff4444;
+  --text-color: #ffffff;
+  --border-color: #eeeeff;
+  --header-bg: #20262d;
+  --my-message-bg: #ee88ee;
+  --other-message-bg: #999999;
+  --date-divider-bg: #1e1e1e;
+}
+body { 
+  background: var(--bg-color); 
+  color: var(--text-color); 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0; 
+  display: flex; 
+  justify-content: center;
+  height: 100vh;
+}
+/* Остальные стили без изменений, вставьте сюда весь CSS из вашего кода */
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+<h2 style="margin-bottom: 30px;">nekofady 1.1.1 (AnonChat 1.4.6)</h2>
+<input type="password" id="gist" placeholder="Gist ID: " />
+<input type="password" id="token" placeholder="Token: " />
+<input type="text" id="userName" placeholder="Username: " />
+<input type="password" id="seedPhrase" placeholder="Chat key: " />
+
+<!-- Поле для ввода URL сервера -->
+<div style="margin-top:20px;">
+  <input type="text" id="serverUrl" placeholder="Введите URL сервера" style="width:70%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+  <button id="loadFileBtn" onclick="updateServerUrl()" style="padding:10px 20px; border-radius:8px; border:none; background:#ff4444; color:#fff; cursor:pointer;">Обновить URL</button>
+</div>
+
+<button onclick="enterChat()" style="margin-top:20px; padding:10px 20px; border-radius:8px; border:none; background:#ff4444; color:#fff; cursor:pointer;">Войти в чат</button>
+</div>
+
+<div id="chat-screen" style="display:none; flex-direction:column; height:100vh; max-width:1000px; margin:auto; background:#222;">
+<div class="header">
+<div class="user-info">
+<span>👤</span>
+<span id="display-name"></span>
+</div>
+<div class="action-buttons">
+<button class="icon-btn" onclick="loadMessages()" title="Обновить">🔄</button>
+<button class="icon-btn" onclick="exportChat()" title="Экспортировать">⬇️</button>
+<button class="icon-btn" onclick="resetChat()" title="Очистить">🗑️</button>
+</div>
+</div>
+<div id="messages" style="flex:1; overflow-y:auto; padding:15px; background:var(--bg-color);"></div>
+<div class="input-area" style="padding:10px; background:var(--header-bg); display:flex; gap:8px; align-items:center;">
+<input type="file" id="fileInput" style="display:none;" accept="image/*,video/*,audio/*" />
+<button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Добавить файл">📎</button>
+<button class="voice-btn" id="voiceBtn" onclick="toggleRecording()" title="Голосовое сообщение">🎤</button>
+<input type="text" id="msgInput" placeholder="Сообщение..." autocomplete="off" style="flex:1; padding:12px; font-size:15px; background:#2b3138; border:none; border-radius:10px; outline:none;" />
+<button class="send-btn" onclick="sendMessage()" title="Отправить" style="padding:12px 20px; background:var(--accent-color); border-radius:30px; font-size:18px;">➤</button>
+</div>
+<div id="compressStatus" style="display:none; background:#2b3138; color:#ffaa00; padding:4px 10px; font-size:12px; text-align:center;">⏳ Обработка медиа...</div>
+</div>
+
+<script>
+// Ваш скрипт
+var GITHUB_TOKEN = '';
+var GIST_ID = '';
+const FILE_NAME = 'chat.txt';
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5МБ
+
+var set = false;
+let currentUser = '';
+let currentSeed = '';
+let refreshInterval = null;
+
+// URL сервера, по умолчанию пустой
+let serverUrl = '';
+
+function updateServerUrl() {
+  const urlInput = document.getElementById('serverUrl');
+  serverUrl = urlInput.value.trim();
+  if (!serverUrl) {
+    alert('Пожалуйста, введите URL сервера');
+  } else {
+    alert('URL сервера обновлен');
+  }
+}
+
+// Вход
+function enterChat() {
+  currentUser = document.getElementById('userName').value.trim();
+  currentSeed = document.getElementById('seedPhrase').value.trim();
+  GITHUB_TOKEN = document.getElementById('token').value.trim();
+  GIST_ID = document.getElementById('gist').value.trim();
+
+  if (!currentUser || !currentSeed || !GITHUB_TOKEN || !GIST_ID || !serverUrl) {
+    return alert("Заполните все поля и укажите URL сервера");
+  }
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('chat-screen').style.display = 'flex';
+
+  document.getElementById('display-name').innerText = currentUser;
+
+  if (refreshInterval) clearInterval(refreshInterval);
+  refreshInterval = setInterval(loadMessages, 10000);
+  loadMessages();
+  set = true;
+}
+
+// Отправка сообщения
+async function sendMessage() {
+  const input = document.getElementById('msgInput');
+  if (!input.value.trim()) return;
+
+  const message = input.value.trim();
+  const encrypted = CryptoJS.AES.encrypt(message, currentSeed).toString();
+
+  if (!serverUrl) {
+    alert('URL сервера не задан');
+    return;
+  }
+
+  try {
+    await fetch(serverUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: currentUser, message: encrypted })
+    });
+    input.value = '';
+  } catch (err) {
+    alert('Ошибка отправки: ' + err.message);
+  }
+}
+
+// Остальной ваш существующий код для загрузки сообщений, обработки файлов и т.д.
+async function loadMessages() {
+  // ваш существующий код
+}
+// ... остальные функции, без изменений
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>FaDy (AnonChat v1.4.6)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <style>
