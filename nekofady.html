@@ -34,8 +34,6 @@ body {
 
 <div id="login-screen">
 <h2 style="margin-bottom: 30px;">nekofady 1.1.1 (AnonChat 1.4.6)</h2>
-<input type="password" id="gist" placeholder="Gist ID: " />
-<input type="password" id="token" placeholder="Token: " />
 <input type="text" id="userName" placeholder="Username: " />
 <input type="password" id="seedPhrase" placeholder="Chat key: " />
 
@@ -100,10 +98,8 @@ function updateServerUrl() {
 function enterChat() {
   currentUser = document.getElementById('userName').value.trim();
   currentSeed = document.getElementById('seedPhrase').value.trim();
-  GITHUB_TOKEN = document.getElementById('token').value.trim();
-  GIST_ID = document.getElementById('gist').value.trim();
 
-  if (!currentUser || !currentSeed || !GITHUB_TOKEN || !GIST_ID || !serverUrl) {
+  if (!currentUser || !currentSeed || !serverUrl) {
     return alert("Заполните все поля и укажите URL сервера");
   }
 
@@ -126,7 +122,6 @@ async function postEncryptedMessage() {
   const message = input.value.trim();
   const encrypted = CryptoJS.AES.encrypt(message, currentSeed).toString();
 
-  // Название мессенджера - nekofady
   if (!serverUrl) {
     alert('URL сервера не задан');
     return;
