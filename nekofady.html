@@ -6,7 +6,7 @@
 <title>nekofady (AnonChat v1.4.6)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <style>
-/* Ваши стили без изменений, только вставлены сюда */
+/* Ваши стили */
 * { box-sizing: border-box; }
 :root {
   --bg-color: #0b0e11;
@@ -28,7 +28,6 @@ body {
   justify-content: center;
   height: 100vh;
 }
-/* Остальные стили без изменений, вставьте сюда весь CSS из вашего кода */
 </style>
 </head>
 <body>
@@ -73,7 +72,7 @@ body {
 </div>
 
 <script>
-// Ваш скрипт
+// Глобальные переменные
 var GITHUB_TOKEN = '';
 var GIST_ID = '';
 const FILE_NAME = 'chat.txt';
@@ -84,7 +83,7 @@ let currentUser = '';
 let currentSeed = '';
 let refreshInterval = null;
 
-// URL сервера, по умолчанию пустой
+// URL сервера для отправки зашифрованных сообщений
 let serverUrl = '';
 
 function updateServerUrl() {
@@ -97,7 +96,7 @@ function updateServerUrl() {
   }
 }
 
-// Вход
+// Вход в чат
 function enterChat() {
   currentUser = document.getElementById('userName').value.trim();
   currentSeed = document.getElementById('seedPhrase').value.trim();
@@ -119,14 +118,15 @@ function enterChat() {
   set = true;
 }
 
-// Отправка сообщения
-async function sendMessage() {
+// Отправка зашифрованного сообщения
+async function postEncryptedMessage() {
   const input = document.getElementById('msgInput');
   if (!input.value.trim()) return;
 
   const message = input.value.trim();
   const encrypted = CryptoJS.AES.encrypt(message, currentSeed).toString();
 
+  // Название мессенджера - nekofady
   if (!serverUrl) {
     alert('URL сервера не задан');
     return;
@@ -144,181 +144,15 @@ async function sendMessage() {
   }
 }
 
-// Остальной ваш существующий код для загрузки сообщений, обработки файлов и т.д.
+// Обработчик для кнопки "Отправить"
+function sendMessage() {
+  postEncryptedMessage();
+}
+
+// Остальной ваш существующий код для загрузки сообщений, отображения и т.д.
 async function loadMessages() {
   // ваш существующий код
 }
-// ... остальные функции, без изменений
-</script>
-</body>
-</html><!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>FaDy (AnonChat v1.4.6)</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<style>
-/* Ваши стили остаются без изменений, пропущу для краткости */
-* { box-sizing: border-box; }
-:root { /* цвета и стили */ }
-body { background: var(--bg-color); /* остальные стили */ }
-/* ... остальной CSS ... */
-#server-file-selection {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-#serverUrl {
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-#loadFileBtn {
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: none;
-  background: #ff4444;
-  color: #fff;
-  cursor: pointer;
-}
-#loadFileBtn:hover {
-  background: #cc0000;
-}
-</style>
-</head>
-<body>
-
-<div id="login-screen">
-<h2 style="margin-bottom: 30px;">FaDy 1.1.1 (AnonChat 1.4.6)</h2>
-<input type="password" id="gist" placeholder="Gist ID: " />
-<input type="password" id="token" placeholder="Token: " />
-<input type="text" id="userName" placeholder="Username: " />
-<input type="password" id="seedPhrase" placeholder="Chat key: " />
-<button onclick="enterChat()">Enter the chat</button>
-<!-- Новый блок для выбора сервера и файла -->
-<div id="server-file-selection">
-  <input type="text" id="serverUrl" placeholder="Введите URL файла на сервере" />
-  <button id="loadFileBtn" onclick="loadFileFromServer()">Загрузить файл</button>
-</div>
-</div>
-
-<div id="chat-screen" style="display:none; flex-direction:column; height:100vh; max-width:1000px; margin:auto; background:#222;">
-<div class="header">
-<div class="user-info">
-<span>👤</span>
-<span id="display-name"></span>
-</div>
-<div class="action-buttons">
-<button class="icon-btn" onclick="loadMessages()" title="Update">🔄</button>
-<button class="icon-btn" onclick="exportChat()" title="Export chat">⬇️</button>
-<button class="icon-btn" onclick="resetChat()" title="Clear chat">🗑️</button>
-</div>
-</div>
-<div id="messages" style="flex:1; overflow-y:auto; padding:15px; background:var(--bg-color);"></div>
-<div class="input-area" style="padding:10px; background:var(--header-bg); display:flex; gap:8px; align-items:center;">
-<input type="file" id="fileInput" style="display:none;" accept="image/*,video/*,audio/*" />
-<button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Add file (max 10 Mb)">📎</button>
-<button class="voice-btn" id="voiceBtn" onclick="toggleRecording()" title="Voice message">🎤</button>
-<input type="text" id="msgInput" placeholder="Message..." autocomplete="off" style="flex:1; padding:12px; font-size:15px; background:#2b3138; border:none; border-radius:10px; outline:none;" />
-<button class="send-btn" onclick="sendMessage()" title="Send" style="padding:12px 20px; background:var(--accent-color); border-radius:30px; font-size:18px;">➤</button>
-</div>
-<div id="compressStatus" style="display:none; background:#2b3138; color:#ffaa00; padding:4px 10px; font-size:12px; text-align:center;">⏳ Processing media...</div>
-</div>
-
-<script>
-/* Переменные */
-var GITHUB_TOKEN = '';
-var GIST_ID = '';
-const FILE_NAME = 'chat.txt';
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 МБ
-
-var set = false;
-let currentUser = '';
-let currentSeed = '';
-let refreshInterval = null;
-
-// URL вашего HTTPS-сервера для отправки зашифрованных сообщений
-const SERVER_URL = 'https://example.com/api/messages'; // <-- замените на ваш URL
-
-// Загрузка файла по URL
-async function loadFileFromServer() {
-  const url = document.getElementById('serverUrl').value.trim();
-  if (!url) {
-    alert('Пожалуйста, введите URL файла');
-    return;
-  }
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
-    const text = await response.text();
-    document.getElementById('msgInput').value = text;
-    alert('Файл успешно загружен и вставлен в поле ввода');
-  } catch (err) {
-    alert('Ошибка при загрузке файла: ' + err.message);
-  }
-}
-
-// Вход в чат
-function enterChat() {
-  currentUser = document.getElementById('userName').value.trim();
-  currentSeed = document.getElementById('seedPhrase').value.trim();
-
-  GITHUB_TOKEN = document.getElementById('token').value.trim();
-  GIST_ID = document.getElementById('gist').value.trim();
-
-  if (!currentUser || !currentSeed || !GITHUB_TOKEN || !GIST_ID) {
-    return alert("Введите имя пользователя, ключ чата, Gist ID и токен!");
-  }
-
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('chat-screen').style.display = 'flex';
-
-  document.getElementById('display-name').innerText = currentUser;
-
-  if (refreshInterval) clearInterval(refreshInterval);
-  refreshInterval = setInterval(loadMessages, 10000);
-  loadMessages();
-  set = true;
-}
-
-// Отправка сообщения
-async function sendMessage() {
-  const input = document.getElementById('msgInput');
-  if (!input.value.trim()) return;
-
-  const message = input.value.trim();
-  const encryptedMessage = CryptoJS.AES.encrypt(message, currentSeed).toString();
-
-  try {
-    await fetch(SERVER_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        user: currentUser,
-        message: encryptedMessage
-      })
-    });
-    input.value = '';
-  } catch (err) {
-    alert('Ошибка отправки сообщения: ' + err.message);
-  }
-}
-
-// Загрузка сообщений
-async function loadMessages() {
-  // Реализуйте по аналогии с вашим кодом, чтобы получать сообщения с сервера или файла
-  // Например, через fetch с API вашего сервера
-  // Здесь оставлю как есть или можете дополнить по необходимости
-}
-
-// Остальные ваши функции: resetChat, exportChat, toggleRecording, обработка файла и т.д.
-// В них не нужно менять логику, если только не требуется
 </script>
 </body>
 </html>
