@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FaDy (AnonChat v1.4.6)</title>
+    <title>CleverChat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * {
@@ -299,9 +299,7 @@
 <body>
 
 <div id="login-screen">
-    <h2 style="margin-bottom: 30px;">FaDy 1.1.1 (AnonChat 1.4.6)</h2>
-    <input type="password" id="gist" placeholder="Gist ID: ">
-    <input type="password" id="token" placeholder="Token: ">
+    <h2 style="margin-bottom: 30px;">CleverChat</h2>
     <input type="text" id="userName" placeholder="Username: ">
     <input type="password" id="seedPhrase" placeholder="Chat key: ">
     <button onclick="enterChat()">Enter the chat </button>
@@ -351,17 +349,17 @@
     let isRecording = false;
 
     // Настройки
-    function set_gist_a_token(token, gist) { // set_gist_a_token() Можно не использовать там есть ввод
+    function set_gist_a_token(token, gist) {
         if (set == false) {
-            GITHUB_TOKEN = stoken;
-            GIST_ID = sgist;
+            GITHUB_TOKEN = token
+            GIST_ID = gist
         }
     }
 
     function debug() {
-        console.log(GITHUB_TOKEN);
-        console.log(GIST_ID);
-        console.log(set);
+        console.log(GITHUB_TOKEN)
+        console.log(GIST_ID)
+        console.log(set)
     }
 
     async function toggleRecording() {
@@ -588,13 +586,8 @@
             if (!getResp.ok) throw new Error(`GET ${getResp.status}: ${await getResp.text()}`);
             const getData = await getResp.json();
 
-            let oldContent = getData.files[FILE_NAME]?.content || '';
+            const oldContent = getData.files[FILE_NAME]?.content || '';
             const separator = oldContent && !oldContent.endsWith('\n') ? '\n' : '';
-          
-            if oldContent.length() > 1000 {
-                oldContent == "0";
-            }
-          
             const newContent = oldContent + separator + encryptedText;
 
             const patchResp = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
@@ -822,12 +815,7 @@
         currentUser = document.getElementById('userName').value.trim();
         currentSeed = document.getElementById('seedPhrase').value.trim();
 
-        curentToken = document.getElementById('token').value;
-        curentGist = document.getElementById('gist').value;
-
-        set_gist_a_token(curentToken, curentGist);
-
-        if (!currentUser || !currentSeed || !curentToken || !curentGist) return alert("Enter username and chat key!");
+        if (!currentUser || !currentSeed) return alert("Enter username and chat key!");
 
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('chat-screen').style.display = 'flex';
