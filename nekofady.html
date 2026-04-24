@@ -299,7 +299,7 @@
 <body>
 
 <div id="login-screen">
-    <h2 style="margin-bottom: 30px;">CleverChat</h2>
+    <h2 style="margin-bottom: 30px;">NekoFaDy (AnonChat 2.1.1)</h2>
     <input type="text" id="userName" placeholder="Username: ">
     <input type="password" id="seedPhrase" placeholder="Chat key: ">
     <button onclick="enterChat()">Enter the chat </button>
@@ -332,10 +332,9 @@
 
 <script>
     // ================== НАСТРОЙКИ ==================
-    var GITHUB_TOKEN = '';   // замените на свой
-    var GIST_ID = '';      // замените на свой
-    const FILE_NAME = 'chat.txt';
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 МБ после шифрования
+    var DB_IP = '';
+    const FILE_NAME = 'chat.nfds';
+    const MAX_FILE_SIZE = 16 * 1024 * 1024 * 1024;
 
     var set = false;
 
@@ -349,7 +348,7 @@
     let isRecording = false;
 
     // Настройки
-    function set_gist_a_token(token, gist) {
+    function set_db_ip(token, gist) {
         if (set == false) {
             GITHUB_TOKEN = token
             GIST_ID = gist
