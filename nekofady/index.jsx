@@ -40,7 +40,7 @@ scr = (
 
 ReactDOM.render(
     scr,
-    document.getElementsById("root")[0]
+    document.getElementsById("root")
 );
 
 
