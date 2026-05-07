@@ -3,7 +3,7 @@ import './style.css';
 
 scr = (
     <body>
-        <div class="login-screen">
+        <div classNmae="login-screen">
             <h2 style="margin-bottom: 30px;">NekoFaDy</h2>
             <input type="text" id="db_ip" placeholder="Chat HTTP-URL: "></input>
             <input type="text" id="userName" placeholder="Username: "></input>
@@ -11,26 +11,26 @@ scr = (
             <button onclick="enterChat()">Enter the chat </button>
         </div>
         <div id="chat-screen">
-            <div class="header">
-                <div class="user-info">
+            <div className="header">
+                <div className="user-info">
                     <span>👤</span>
                     <span id="display-name"></span>
                 </div>
-                <div class="action-buttons">
-                    <button class="icon-btn" onclick="loadMessages()" title="Update">🔄</button>
-                    <button class="icon-btn" onclick="exportChat()" title="Export chat">⬇️</button>
-                    <button class="icon-btn" onclick="resetChat()" title="Clear chat">🗑️</button>
+                <div className="action-buttons">
+                    <button className="icon-btn" onclick="loadMessages()" title="Update">🔄</button>
+                    <button className="icon-btn" onclick="exportChat()" title="Export chat">⬇️</button>
+                    <button className="icon-btn" onclick="resetChat()" title="Clear chat">🗑️</button>
                 </div>
             </div>
             
             <div id="messages"></div>
 
-            <div class="input-area">
+            <div className="input-area">
                 <input type="file" id="fileInput" style="display:none;" accept="image/*,video/*,audio/*"></input>
-                <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Add file (max 10 Mb)">📎</button>
-                <button class="voice-btn" id="voiceBtn" onclick="toggleRecording()" title="Voice message">🎤</button>
+                <button className="attach-btn" onclick="document.getElementById('fileInput').click()" title="Add file (max 10 Mb)">📎</button>
+                <button className="voice-btn" id="voiceBtn" onclick="toggleRecording()" title="Voice message">🎤</button>
                 <input type="text" id="msgInput" placeholder="Message..." autocomplete="off"></input>
-                <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
+                <button className="send-btn" onclick="sendMessage()" title="Send">➤</button>
             </div>
             <div id="compressStatus" style="display:none; background: #2b3138; color:#ffaa00; padding:4px 10px; font-size:12px; text-align:center;">⏳ Processing media...</div>
         </div>
