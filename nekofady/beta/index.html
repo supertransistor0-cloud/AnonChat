@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NekoFaDy BETA</title>
+    <link href="./style.css">
+    <script src="./script.js"></script>
+</head>
+<body class="root">
+    <div class="2root">
+                <div class="login-screen">
+            <h2 style="margin-bottom: 30px;">NekoFaDy</h2>
+            <input type="text" id="db_ip" placeholder="Chat HTTP-URL: "></input>
+            <input type="text" id="userName" placeholder="Username: "></input>
+            <input type="password" id="seedPhrase" placeholder="Chat key: "></input>
+            <button onclick="enterChat()">Enter the chat </button>
+        </div>
+        <div id="chat-screen">
+            <div class="header">
+                <div class="user-info">
+                    <span>👤</span>
+                    <span id="display-name"></span>
+                </div>
+                <div class="action-buttons">
+                    <button class="icon-btn" onclick="loadMessages()" title="Update">🔄</button>
+                    <button class="icon-btn" onclick="exportChat()" title="Export chat">⬇️</button>
+                    <button class="icon-btn" onclick="resetChat()" title="Clear chat">🗑️</button>
+                </div>
+            </div>
+            
+            <div id="messages"></div>
 
+            <div className="input-area">
+                <input type="file" id="fileInput" style="display:none;" accept="image/*,video/*,audio/*"></input>
+                <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Add file (max 10 Mb)">📎</button>
+                <button class="voice-btn" id="voiceBtn" onclick="toggleRecording()" title="Voice message">🎤</button>
+                <input type="text" id="msgInput" placeholder="Message..." autocomplete="off"></input>
+                <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
+            </div>
+            <div id="compressStatus" style="display:none; background: #2b3138; color:#ffaa00; padding:4px 10px; font-size:12px; text-align:center;">⏳ Processing media...</div>
+        </div>
+    </div>
+</body>
+</html>
